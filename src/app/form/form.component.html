@@ -1,0 +1,244 @@
+<div class="mx-auto max-w-4xl space-y-10 bg-gray-50 p-6">
+  <h1 class="text-center text-3xl font-bold text-blue-700">Application Form</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submitForm()" class="space-y-10">
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+      formGroupName="personalInfo"
+    >
+      <h2 class="text-xl font-semibold text-gray-700">Personal Information</h2>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <input
+          type="text"
+          formControlName="firstName"
+          placeholder="First Name"
+          class="input-style"
+        />
+        <input
+          type="text"
+          formControlName="lastName"
+          placeholder="Last Name"
+          class="input-style"
+        />
+        <input type="date" formControlName="dateOfBirth" class="input-style" />
+      </div>
+
+      <div class="mt-2 flex items-center gap-4">
+        <span class="text-gray-600">Gender:</span>
+        <label
+          ><input
+            type="radio"
+            formControlName="gender"
+            value="Male"
+            class="mr-1"
+          />
+          Male</label
+        >
+        <label
+          ><input
+            type="radio"
+            formControlName="gender"
+            value="Female"
+            class="mr-1"
+          />
+          Female</label
+        >
+        <label
+          ><input
+            type="radio"
+            formControlName="gender"
+            value="Other"
+            class="mr-1"
+          />
+          Other</label
+        >
+      </div>
+    </div>
+
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+      formGroupName="contactInfo"
+    >
+      <h2 class="text-xl font-semibold text-gray-700">Contact Information</h2>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+          class="input-style"
+        />
+        <input
+          type="tel"
+          formControlName="phone"
+          placeholder="Phone Number"
+          class="input-style"
+        />
+        <select formControlName="preferredContact" class="input-style">
+          <option value="">Preferred Contact</option>
+          <option>Email</option>
+          <option>Phone</option>
+          <option>SMS</option>
+        </select>
+      </div>
+
+      <div
+        formGroupName="address"
+        class="grid grid-cols-1 gap-4 md:grid-cols-2"
+      >
+        <input
+          type="text"
+          formControlName="street"
+          placeholder="Street"
+          class="input-style"
+        />
+        <input
+          type="text"
+          formControlName="city"
+          placeholder="City"
+          class="input-style"
+        />
+        <input
+          type="text"
+          formControlName="state"
+          placeholder="State"
+          class="input-style"
+        />
+        <input
+          type="text"
+          formControlName="zip"
+          placeholder="ZIP Code"
+          class="input-style"
+        />
+      </div>
+    </div>
+
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+    >
+      <h2 class="text-xl font-semibold text-gray-700">File Upload</h2>
+      <label>Profile Picture:</label>
+      <input
+        type="file"
+        (change)="onFileChange($event, 'profilePicture')"
+        class="input-style"
+      />
+
+      <!-- Preview -->
+      <div *ngIf="form.value.profilePicture">
+        <img
+          *ngIf="
+            form.value.profilePicture &&
+            form.value.profilePicture.type?.includes('image')
+          "
+          [src]="filePreviewUrl('profilePicture')"
+          alt="Profile Picture"
+          class="mt-2 h-32 w-32 rounded-full object-cover"
+        />
+      </div>
+
+      <label class="mt-2">Resume:</label>
+      <input
+        type="file"
+        (change)="onFileChange($event, 'resume')"
+        class="input-style w-fit"
+      />
+
+      <div *ngIf="form.value.resume">
+        <p class="mt-2 text-sm">Selected: {{ form.value.resume.name }}</p>
+      </div>
+    </div>
+
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+    >
+      <h2 class="text-xl font-semibold text-gray-700">Hobbies</h2>
+      <div class="flex flex-wrap gap-4">
+        @for (hobby of hobbyList; track $index) {
+          <label>
+            <input
+              type="checkbox"
+              [checked]="form.value.hobbies.includes(hobby)"
+              (change)="toggleHobby(hobby, $event)"
+              class="mr-1"
+            />
+            {{ hobby }}
+          </label>
+        }
+      </div>
+    </div>
+
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-gray-700">Education</h2>
+        <button
+          type="button"
+          (click)="addEducation()"
+          class="cursor-pointer text-sm text-blue-600 hover:underline"
+        >
+          + Add
+        </button>
+      </div>
+
+      <div formArrayName="educations" class="space-y-4">
+        <div
+          *ngFor="let edu of educationsArray.controls; let i = index"
+          [formGroupName]="i"
+          class="relative flex justify-between rounded border border-gray-200 bg-gray-50 p-4"
+        >
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <input
+              type="text"
+              formControlName="degree"
+              placeholder="Degree"
+              class="input-style"
+            />
+            <input
+              type="text"
+              formControlName="institute"
+              placeholder="Institute"
+              class="input-style"
+            />
+            <input
+              type="text"
+              formControlName="year"
+              placeholder="Year (e.g. 2020)"
+              class="input-style"
+            />
+          </div>
+
+          <button
+            type="button"
+            (click)="removeEducation(i)"
+            class="cursor-pointer border p-1 text-sm text-red-500 hover:text-red-700"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="space-y-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
+    >
+      <label class="inline-flex items-center space-x-2">
+        <input
+          type="checkbox"
+          formControlName="terms"
+          class="accent-blue-500"
+        />
+        <span>Accept terms and conditions.</span>
+      </label>
+    </div>
+
+    <div class="text-center">
+      <button
+        type="submit"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+      >
+        {{ isEdit ? "Update" : "Submit" }}
+      </button>
+    </div>
+  </form>
+</div>

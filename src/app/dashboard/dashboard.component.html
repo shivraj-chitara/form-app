@@ -1,0 +1,98 @@
+<div class="mx-auto space-y-6 p-6">
+  <h1 class="text-2xl font-bold">Dashboard</h1>
+
+  <div class="flex items-center justify-between">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="applyFilter()"
+      placeholder="Search by name or email"
+      class="w-1/2 rounded border p-2"
+    />
+
+    <a
+      routerLink="/form"
+      class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+    >
+      Add New
+    </a>
+  </div>
+
+  <table class="mt-4 w-full border-collapse">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="border p-2">Name</th>
+        <th class="border p-2">Email</th>
+        <th class="border p-2">Phone</th>
+        <th class="border p-2">Gender</th>
+        <th class="border p-2">Date of Birth</th>
+        <th class="border p-2">Address</th>
+        <th class="border p-2">Hobbies</th>
+        <th class="border p-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of currentPageData" class="hover:bg-gray-50">
+        <td class="border p-2">
+          {{ r.personalInfo.firstName }} {{ r.personalInfo.lastName }}
+        </td>
+        <td class="border p-2">{{ r.contactInfo.email }}</td>
+        <td class="border p-2">{{ r.contactInfo.phone }}</td>
+        <td class="border p-2">{{ r.personalInfo.gender }}</td>
+        <td class="border p-2">{{ r.personalInfo.dateOfBirth | date }}</td>
+
+        <td class="border p-2">
+          {{ r.contactInfo.address.street }}, {{ r.contactInfo.address.city }},
+          {{ r.contactInfo.address.state }},
+          {{ r.contactInfo.address.zip }}
+        </td>
+
+        <td class="border p-2">
+          <ul>
+            <li *ngFor="let hobby of r.hobbies">{{ hobby }}</li>
+          </ul>
+        </td>
+
+        <td class="space-x-2 border p-2">
+          <button
+            (click)="handleEdit(r.id)"
+            class="cursor-pointer text-blue-600 hover:underline"
+          >
+            Edit
+          </button>
+          <button
+            (click)="handleDelete(r.id)"
+            class="cursor-pointer text-red-600 hover:underline"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="currentPageData.length === 0">
+        <td colspan="8" class="p-4 text-center text-gray-500">
+          No records found.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mt-4 flex items-center justify-between">
+    <button
+      (click)="handlePrevPage()"
+      [disabled]="currentPage === 1"
+      class="rounded bg-gray-200 px-4 py-2 disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+    <button
+      (click)="handleNextPage()"
+      [disabled]="currentPage === totalPages"
+      class="rounded bg-gray-200 px-4 py-2 disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
