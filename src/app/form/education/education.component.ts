@@ -15,16 +15,16 @@ import {
   templateUrl: './education.component.html',
 })
 export class EducationComponent {
-  educationArray: FormArray;
+  educations: FormArray;
 
   @Output() register = new EventEmitter<FormArray>();
 
   constructor(private fb: FormBuilder) {
-    this.educationArray = this.fb.array([this.createEducationGroup()]);
+    this.educations = this.fb.array([this.createEducationGroup()]);
   }
 
   ngOnInit() {
-    this.register.emit(this.educationArray);
+    this.register.emit(this.educations);
   }
 
   createEducationGroup(): FormGroup {
@@ -36,14 +36,14 @@ export class EducationComponent {
   }
 
   addEducation(): void {
-    this.educationArray.push(this.createEducationGroup());
+    this.educations.push(this.createEducationGroup());
   }
 
   removeEducation(index: number): void {
-    this.educationArray.removeAt(index);
+    this.educations.removeAt(index);
   }
 
   get educationFormGroups(): FormGroup[] {
-    return this.educationArray.controls as FormGroup[];
+    return this.educations.controls as FormGroup[];
   }
 }

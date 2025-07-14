@@ -5,6 +5,7 @@ import {
   FormGroup,
   FormArray,
   AbstractControl,
+  FormControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -80,6 +81,8 @@ export class FormComponent {
             (control as FormArray).push(this.fb.control(item));
           }
         });
+      } else if (control instanceof FormControl) {
+        control.setValue(this.record[key]);
       }
     }
   }
