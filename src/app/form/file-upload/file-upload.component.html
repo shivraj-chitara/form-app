@@ -1,0 +1,29 @@
+<div [formGroup]="formGroup" class="form-section">
+  <h2 class="text-lg font-bold">File Upload</h2>
+
+  <label>Profile Picture:</label>
+  <input
+    type="file"
+    (change)="onFileChange($event, 'profilePicture')"
+    class="input-style"
+  />
+
+  <div *ngIf="formGroup.value.profilePicture">
+    <img
+      *ngIf="formGroup.value.profilePicture?.type?.includes('image')"
+      [src]="filePreviewUrl('profilePicture')"
+      alt="Profile Picture"
+      class="mt-2 h-32 w-32 rounded-full object-cover"
+    />
+  </div>
+
+  <label class="mt-2">Resume:</label>
+  <input
+    type="file"
+    (change)="onFileChange($event, 'resume')"
+    class="input-style"
+  />
+  <div *ngIf="formGroup.value.resume">
+    <p class="mt-2 text-sm">Selected: {{ formGroup.value.resume.name }}</p>
+  </div>
+</div>

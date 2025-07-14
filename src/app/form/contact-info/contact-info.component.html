@@ -1,0 +1,51 @@
+<div [formGroup]="formGroup" class="form-section">
+  <h2 class="text-lg font-bold">Contact Information</h2>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <input
+      type="email"
+      formControlName="email"
+      placeholder="Email"
+      class="input-style"
+    />
+    <input
+      type="tel"
+      formControlName="phone"
+      placeholder="Phone Number"
+      class="input-style"
+    />
+    <select formControlName="preferredContact" class="input-style">
+      <option value="">Preferred Contact</option>
+      <option>Email</option>
+      <option>Phone</option>
+      <option>SMS</option>
+    </select>
+  </div>
+
+  <div formGroupName="address" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <input
+      type="text"
+      formControlName="street"
+      placeholder="Street"
+      class="input-style"
+    />
+    <input
+      type="text"
+      formControlName="city"
+      placeholder="City"
+      class="input-style"
+    />
+    <input
+      type="text"
+      formControlName="state"
+      placeholder="State"
+      class="input-style"
+    />
+    <input
+      type="text"
+      formControlName="zip"
+      placeholder="ZIP Code"
+      class="input-style"
+    />
+  </div>
+</div>

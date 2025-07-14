@@ -1,0 +1,47 @@
+<div class="form-section">
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-bold">Education</h2>
+    <button
+      type="button"
+      (click)="addEducation()"
+      class="text-blue-600 hover:underline"
+    >
+      + Add
+    </button>
+  </div>
+
+  <div
+    *ngFor="let group of educationFormGroups; let i = index"
+    [formGroup]="group"
+    class="relative flex justify-between rounded border border-gray-200 bg-gray-50 p-4"
+  >
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <input
+        type="text"
+        formControlName="degree"
+        placeholder="Degree"
+        class="input-style"
+      />
+      <input
+        type="text"
+        formControlName="institute"
+        placeholder="Institute"
+        class="input-style"
+      />
+      <input
+        type="text"
+        formControlName="year"
+        placeholder="Year (e.g. 2020)"
+        class="input-style"
+      />
+    </div>
+
+    <button
+      type="button"
+      (click)="removeEducation(i)"
+      class="cursor-pointer border p-1 text-sm text-red-500 hover:text-red-700"
+    >
+      ✕
+    </button>
+  </div>
+</div>

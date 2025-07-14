@@ -1,0 +1,15 @@
+<div class="form-section">
+  <h2 class="text-lg font-bold">Hobbies</h2>
+
+  <div class="flex flex-wrap gap-4">
+    <label *ngFor="let hobby of hobbyList">
+      <input
+        type="checkbox"
+        [checked]="hobbiesArray.value.includes(hobby)"
+        (change)="toggleHobby(hobby, $event)"
+        class="mr-1"
+      />
+      {{ hobby }}
+    </label>
+  </div>
+</div>

@@ -4,26 +4,38 @@ import {
   Validators,
   FormGroup,
   FormArray,
-  FormControl,
+  AbstractControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PersonalInfoComponent } from './personal-info/personal-info.component';
+import { ContactInfoComponent } from './contact-info/contact-info.component';
+import { FileUploadComponent } from './file-upload/file-upload.component';
+import { HobbiesComponent } from './hobbies/hobbies.component';
+import { EducationComponent } from './education/education.component';
 import { formStore } from '../store/form.store';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PersonalInfoComponent,
+    ContactInfoComponent,
+    FileUploadComponent,
+    HobbiesComponent,
+    EducationComponent,
+  ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
 })
 export class FormComponent {
   form: FormGroup;
   isEdit = false;
-  // @ts-ignore
-  formId: number;
-  hobbyList: string[] = ['Reading', 'Traveling', 'Cooking', 'Sports', 'Music'];
+  formId!: number;
+  private record: any = null;
 
   constructor(
     private fb: FormBuilder,
@@ -31,27 +43,6 @@ export class FormComponent {
     private router: Router,
   ) {
     this.form = this.fb.group({
-      personalInfo: this.fb.group({
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        gender: ['', Validators.required],
-        dateOfBirth: ['', Validators.required],
-      }),
-      contactInfo: this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        phone: ['', Validators.required],
-        preferredContact: ['', Validators.required],
-        address: this.fb.group({
-          street: ['', Validators.required],
-          city: ['', Validators.required],
-          state: ['', Validators.required],
-          zip: ['', Validators.required],
-        }),
-      }),
-      profilePicture: [null],
-      resume: [null],
-      hobbies: this.fb.array([]),
-      educations: this.fb.array([this.createEducationGroup()]),
       terms: [false, Validators.requiredTrue],
     });
   }
@@ -62,92 +53,54 @@ export class FormComponent {
       if (id) {
         this.isEdit = true;
         this.formId = +id;
-        this.loadFormData(+id);
+        this.record = formStore.getForm(this.formId);
+      }
+
+      if (this.record) {
+        if ('terms' in this.record) {
+          this.form.get('terms')?.setValue(this.record.terms);
+        }
       }
     });
   }
 
-  loadFormData(id: number) {
-    const record = formStore.getForm(id);
-    console.log(record);
-    if (record) {
-      this.form.patchValue({
-        personalInfo: record.personalInfo,
-        contactInfo: record.contactInfo,
-        terms: record.terms,
-        profilePicture: record.profilePicture,
-        resume: record.resume,
-      });
+  registerFormGroup(key: string, control: AbstractControl) {
+    this.form.addControl(key, control);
 
-      this.hobbiesArray.clear();
-      record.hobbies.forEach((hobby) => {
-        this.hobbiesArray.push(this.fb.control(hobby));
-      });
-
-      this.educationsArray.clear();
-      record.educations.forEach((education) => {
-        this.educationsArray.push(this.fb.group(education));
-      });
+    if (this.isEdit && this.record && this.record[key]) {
+      if (control instanceof FormGroup) {
+        control.patchValue(this.record[key]);
+      } else if (control instanceof FormArray) {
+        const arrayData = this.record[key];
+        control.clear();
+        arrayData.forEach((item: any) => {
+          if (typeof item === 'object') {
+            (control as FormArray).push(this.fb.group(item));
+          } else {
+            (control as FormArray).push(this.fb.control(item));
+          }
+        });
+      }
     }
-  }
-
-  get hobbiesArray() {
-    return this.form.get('hobbies') as FormArray;
-  }
-
-  get educationsArray(): FormArray {
-    return this.form.get('educations') as FormArray;
-  }
-
-  toggleHobby(hobby: string, event: any) {
-    const hobbies = this.hobbiesArray;
-    if (event.target.checked) {
-      hobbies.push(new FormControl(hobby));
-    } else {
-      const index = hobbies.controls.findIndex((x) => x.value === hobby);
-      hobbies.removeAt(index);
-    }
-  }
-
-  onFileChange(event: any, controlName: string) {
-    const file = event.target.files[0];
-    this.form.get(controlName)?.setValue(file);
-  }
-
-  filePreviewUrl(fileControl: string) {
-    const file = this.form.get(fileControl)?.value;
-    return file ? URL.createObjectURL(file) : null;
-  }
-
-  createEducationGroup(): FormGroup {
-    return this.fb.group({
-      degree: ['', Validators.required],
-      institute: ['', Validators.required],
-      year: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-    });
-  }
-
-  addEducation(): void {
-    this.educationsArray.push(this.createEducationGroup());
-  }
-
-  removeEducation(index: number): void {
-    this.educationsArray.removeAt(index);
   }
 
   submitForm() {
-    if (this.form.valid) {
-      if (this.isEdit) {
-        formStore.updateForm(this.formId, this.form.value);
-        // alert('Form updated successfully!');
-      } else {
-        formStore.addForm(this.form.value);
-        // alert('Form submitted successfully!');
-      }
+    // if (this.form.valid) {
 
-      this.router.navigate(['/dashboard']);
-    } else {
-      alert('Please fill in all required fields.');
+    if (!this.form.get('terms')?.value) {
+      alert('Please accept the terms and conditions.');
+      return;
     }
+
+    if (this.isEdit) {
+      formStore.updateForm(this.formId, this.form.value);
+    } else {
+      formStore.addForm(this.form.value);
+    }
+
+    this.router.navigate(['/dashboard']);
+    // } else {
+    // alert('Please fill in all required fields.');
+    // }
   }
 }

@@ -1,0 +1,52 @@
+<div [formGroup]="formGroup" class="form-section">
+  <h2 class="text-lg font-bold">Personal Information</h2>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <input
+      type="text"
+      formControlName="firstName"
+      placeholder="First Name"
+      class="input-style"
+    />
+    <input
+      type="text"
+      formControlName="lastName"
+      placeholder="Last Name"
+      class="input-style"
+    />
+    <div class="mt-2 flex items-center gap-4">
+      <span class="text-gray-600">DOB:</span>
+      <input type="date" formControlName="dateOfBirth" class="input-style" />
+    </div>
+    <div class="mt-2 flex items-center gap-4">
+      <span class="text-gray-600">Gender:</span>
+      <label
+        ><input
+          type="radio"
+          formControlName="gender"
+          value="Male"
+          class="mr-1"
+        />
+        Male</label
+      >
+      <label
+        ><input
+          type="radio"
+          formControlName="gender"
+          value="Female"
+          class="mr-1"
+        />
+        Female</label
+      >
+      <label
+        ><input
+          type="radio"
+          formControlName="gender"
+          value="Other"
+          class="mr-1"
+        />
+        Other</label
+      >
+    </div>
+  </div>
+</div>
